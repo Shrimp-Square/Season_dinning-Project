@@ -3,12 +3,16 @@
     <body>
         <h1>인덱스 페이지 입니다</h1>
         <div>
+            <!-- 후에 css 적용하면 nav bar로 오른쪽 상단에 뜨도록 조정 -->
+            <!-- 로그인 되어있는 상태면 username 뜨고 로그아웃 버튼 보여줌 -->
             {% if user.username %}
             {{ user.username }}
-            {% else %}
             <a href = "/users/logout/">로그아웃</a>
+            {% else %}
+            <!-- 로그인 안된 상태면 로그인/회원가입 연결 버튼 보여줌-->
+            <button><a href = "/users/login/">로그인 및 회원가입</a></button>
             {% endif %}
         </div>
-        <!-- 로그인 안된 상태면 로그인 연결 버튼 뜨도록-->
+        
     </body>
 </html>
