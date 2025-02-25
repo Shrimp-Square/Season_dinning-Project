@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <h1>가게 등록</h1>
+    </head>
+    <body>
+        <div id="market-add">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div>
+                    <label>상호명</label>
+                    <input type="text" name="market_name">
+                </div>
+                <div>
+                    <label>전화번호</label>
+                    <input type="text" name="call_number">
+                </div>                               
+                <div>
+                    <label>주소</label>
+                    <input type="text" name="address">
+                </div>
+                <div>
+                    <label>해시태그</label>
+                    <input type="text" name="tags">
+                </div>
+                <div>
+                    <label>썸네일</label>
+                    <input name="thumbnail" type="file">
+                </div>
+                <button type="submit" class="btn btn-primary">작성</button>
+            </form>
+        </div>
+    </body>
+</html>
