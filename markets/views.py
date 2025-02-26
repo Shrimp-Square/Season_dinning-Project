@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
-from markets.models import Market,Comment
+
+from markets.models import Market,Comment,HashTag,MarketImage,Festival
+
 from markets.forms import MarketForm
 
 # Create your views here.
@@ -22,13 +24,22 @@ def market_add(request):
             return render(request, "markets/market_list.html")
     else:
         form = MarketForm()
-        context = {"form": form}
-
+        context = {
+            'form' : form
+        }
     return render(request, "markets/market_add.html", context)
 
+def nearby_tag_markets(request, tag_id, festival_id): # 해시태그를 통해 축제인근 가게를 검색
+    tag = HashTag.objects.get(id = tag_id)
+    festival = Festival.objects.get(id = festival_id)
 
-def tags(request, tag_name):
-    return render(request, "markets/markets/tags.html")
+    nearby_markets = festival.markets.all()
+    tag_markets = nearby_markets.filter(tags=tag)
+
+    context = { "festival" : festival, "tag" : tag, "tag_markets" : tag_markets}
+
+    return render(request, "tag_search_list.html", context)
+
 
 def market_detail(request, id):
     post = Market.objects.get(pk = id)
@@ -43,4 +54,6 @@ def market_detail(request, id):
         'content' : comment_content
     }
     return render(request, "markets/market_detail.html", context)
+
+
 

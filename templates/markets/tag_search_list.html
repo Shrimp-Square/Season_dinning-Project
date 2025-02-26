@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <body>
+    <header>
+        <h2>#{{ tag_name }}</h2>
+        <div>Market {{ tag_markets.count }} </div> # 해당 해시태그를 가진 가게수 
+    </header>
+    <div>
+        {% for tag_market in tag_markets %}
+            {% if tag_market.marketimage_set.first and tag_market.marketimage_set.first.photo %}
+                <a href = "{% url 'market_detail' tag_market_id=tag_market.id %}">
+                    <img src="{{ tag_market.marketimage_set.first.photo.url }}" alt ="">
+                </a>
+    </div>
+            {% endif %}
+            {% empty %}
+    </body>
+        {% endfor %}
+</html>
