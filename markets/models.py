@@ -9,7 +9,7 @@ class Market(models.Model):
     call_number = models.CharField(max_length=15, verbose_name= '전화번호') 
     content = models.TextField(verbose_name= '가게 소개') # 업로드한 사진들(MarketImage)에 대한 소개 
     tags = models.ManyToManyField("markets.HashTag", max_length= 50, blank= True, verbose_name= '해시태그 목록') 
-    festival = models.ForeignKey("markets.Festival", on_delete= models.SET_NULL, related_name = 'markets'),
+    festivals = models.ManyToManyField("markets.Festival", on_delete= models.SET_NULL, related_name = 'markets'),
 
 class MarketImage(models.Model):
     post = models.ForeignKey("markets.Market",
@@ -32,7 +32,8 @@ class Festival(models.Model):
     start_month = models.IntegerField()
     middle_month = models.IntegerField()
     end_month = models.IntegerField()
-    location = models.CharField(max_length = 128, verbose_name = '축제위치')
+    address = models.CharField(max_length = 128, verbose_name = '축제주소')
+    location = models.CharField(max_length = 5, verbose_name = '축제지역')
     description = models.TextField(verbose_name = '축제소개')
     festival_thumbnail = models.ImageField(verbose_name= '축제 썸네일', upload_to = "festivals/thumbnail", blank = True)
     season = models.IntegerField()
@@ -48,7 +49,7 @@ class Festival(models.Model):
         elif '충청' in location or '대전' in location or '세종' in location:
             return Region.objects.get(name="충청권")
         
-        elif '전라' in location or'광주' in location:
+        elif '전라' in location or'광주' in location or '전북' in location:
             return Region.objects.get(name="호남권")
         
         elif '강원' in location:
