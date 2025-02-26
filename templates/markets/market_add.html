@@ -1,33 +1,22 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ko">
     <head>
-        <h1>가게 등록</h1>
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
     </head>
     <body>
-        <div id="market-add">
+        <div id="navbar">
+            <span>글 작성</span>
+        </div>
+        <div id="post-add">
             <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
+                {{ form.as_p }}
                 <div>
-                    <label>상호명</label>
-                    <input type="text" name="market_name">
-                </div>
-                <div>
-                    <label>전화번호</label>
-                    <input type="text" name="call_number">
-                </div>                               
-                <div>
-                    <label>주소</label>
-                    <input type="text" name="address">
-                </div>
-                <div>
-                    <label>해시태그</label>
-                    <input type="text" name="tags">
-                </div>
-                <div>
-                    <label>썸네일</label>
+                    <label>사진</label>
                     <input name="thumbnail" type="file">
                 </div>
-                <button type="submit" class="btn btn-primary">작성</button>
+                <button type="submit" class="btn btn-primary">추가</button>
             </form>
         </div>
     </body>
