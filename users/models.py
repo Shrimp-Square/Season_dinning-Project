@@ -9,6 +9,8 @@ class User(AbstractUser):
     email = models.CharField(max_length=40, verbose_name = '이메일')
     business_number = models.CharField(max_length=10, blank = True, verbose_name = '사업자번호')
     profile_image = models.ImageField(upload_to="users/profile", blank = True, verbose_name='프로필사진')
-
+    like_markets = models.ManyToManyField("markets.Market", verbose_name = "좋아요 누른 Market 목록",
+                                          related_name = "like_users", blank = True, )
+    
 # class User(models.Model):
 #    pass

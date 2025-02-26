@@ -1,12 +1,13 @@
 from django import forms
 from markets.models import Market
+from users.models import User
 
 class MarketForm(forms.ModelForm):
     class Meta:
         model = Market
         fields =  [
-            "market_name",
+            "name",
             "call_number",
             "address",
-            "thumbnail",
+            "tags",
         ]
