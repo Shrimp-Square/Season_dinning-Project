@@ -1,19 +1,40 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ko">
     <head>
-        <h1>가게 상세 페이지 입니다</h1>
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
     </head>
     <body>
-        <h1>게시판 페이지입니다</h1>
-        <!-- 게시판(postlist)의 게시글(list)을 하나씩 보여줍니다 -->
-        <!-- {와 %로 이루어진 구문 내부엔 파이썬이 사용됩니다 -->
-        <table>
-        {% for market in markets %}
-            <!-- 게시글 클릭시 세부페이지로 넘어갑니다-->
-            <ul>
-                <li><a href="{{market_id.pk}}/">{{list.market}}</a></li>
+        <div id="navbar">
+            <span>상호명</span>
+        </div>  
+        <div class="post-images splide">
+            <div class="splide__track">
+                <ul class="splide__list">
+                    {% for image in post.postimage_set.all %}
+                        {% if image.photo %}
+                            <li class="splide__slide">
+                                <img src="{{ image.photo.url }}">
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div id="post-detail">
+            <p>{{ post.content|linebreaksbr }}</p>
+            <ul class="comments">
+                {% for comment in post.comment_set.all %}
+                    <li class="comment">{{ comment.content }}</li>
+                {% empty %} <!-- post.comment_set.all 에 순회할 항목이 없는 경우 -->
+                    <li class="comment-empty">아직 댓글이 없습니다</li>
+                {% endfor %}
             </ul>
-        {% endfor %}
-        </table>
+            <form method="POST">
+                {% csrf_token %}
+                <textarea name="comment"></textarea>
+                <button type="submit" class="btn btn-primary">댓글 작성</button>
+            </form>
+        </div>
     </body>
 </html>
