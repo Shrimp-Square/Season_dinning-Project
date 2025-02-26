@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from markets.models import Market,HashTag,MarketImage
+from markets.models import Market,Comment
 from markets.forms import MarketForm
 
 # Create your views here.
@@ -15,33 +15,32 @@ def market_list(request):
 def market_add(request):
     if request.method == "POST":
 
-        form = MarketForm(request.POST, request.FILES)
+        form = MarketForm(request.POST)
 
         if form.is_valid():
-            market = form.save(commit = False)
-            market.user = request.user
-            market.save()
-
-            return redirect("markets/"+ f"{market.market_id}")
+            form.save()
+            return render(request, "markets/market_list.html")
     else:
         form = MarketForm()
-        context = {
-            'form' : form
-        }
+        context = {"form": form}
+
     return render(request, "markets/market_add.html", context)
 
 
-
-
-
-
-def tags(request):
+def tags(request, tag_name):
     return render(request, "markets/markets/tags.html")
 
-def market_detail(request, market_id):
-    post = Market.objects.get(pk = market_id)
+def market_detail(request, id):
+    post = Market.objects.get(pk = id)
+    
+    if request.method == "POST":
+        comment_content = request.POST["comment"]
+        
+        Comment.objects.create(
+            content = comment_content,
+        )
     context = {
-        "post" : post
+        'content' : comment_content
     }
     return render(request, "markets/market_detail.html", context)
 
