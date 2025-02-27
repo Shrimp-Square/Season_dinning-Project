@@ -10,6 +10,7 @@ class MarketForm(forms.ModelForm):
             "name",
             "call_number",
             "address",
+            "content",
         ]
 
 class CommentForm(forms.ModelForm):
