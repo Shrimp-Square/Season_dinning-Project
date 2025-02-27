@@ -9,5 +9,6 @@ urlpatterns = [
     # path("tags/<str: tag_name>/", views.nearby_tag_markets, name = "tag_search_list"),
     path("tags/<str:tag_name>/", views.nearby_tag_markets, name = "tag_search_list"),
     path("<int:market_id>/like/", views.market_like, name = "market_like"),
-    path("comment_add", views.comment_add, name="comment_add")
+    path("<int:market_id>/comment_add/", views.comment_add, name="comment_add"),
+    path("<int:pk>/edit/", views.market_edit, name = "market_edit"),
 ]

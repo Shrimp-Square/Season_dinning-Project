@@ -1,7 +1,6 @@
-from django.shortcuts import render, redirect, reverse
-
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from markets.models import Market,Comment,HashTag,MarketImage,Festival
-
 from markets.forms import MarketForm, CommentForm
 
 # Create your views here.
@@ -63,22 +62,25 @@ def nearby_tag_markets(request, tag_id, festival_id): # 해시태그를 통해 �
 
     return render(request, "tag_search_list.html", context)
 
+def comment_add(request, market_id):
+    if request.method == "POST":
+        form = CommentForm(data = request.POST)    
+        print(request.POST)
+        print(form)
+        if form.is_valid():
+            print("is_valid 이후")
+            comment = form.save(commit = False)
+            comment.user = request.user
+            comment.save()            
 
-def comment_add(request,market_id):
-    form = CommentForm(data = request.POST)
-    
-    if form.is_valid():
-        comment = form.save(commit = False)
-        comment.user = request.user
-        comment.save()
+            if request.GET.get("next"):
+                url_next = request.GET.get("next")
+            else:
+                url_next = request.GET.get("next") or reverse("markets:market_detail", kwargs={"market_id": market_id})
+            return redirect(url_next)
 
-        if request.GET.get("next"):
-            url_next = request.GET.get("next")
-
-        # "next"값을 전달받지 않았다면 피드페이지의 글 위치로 이동
-        else:
-            url_next = request.GET.get("next") or reverse("markets:market_detail", kwargs={"market_id": market_id})
-        return redirect(url_next)
+    # return redirect(url)
+    return redirect(f"/markets/{market_id}/")
     
 
 def market_detail(request, market_id):
@@ -87,6 +89,7 @@ def market_detail(request, market_id):
     context = {
         "market" : market,
         "comment_form" : comment_form,
+        "market_id" : market_id,
     }
     return render(request,"markets/market_detail.html", context)
 
@@ -102,3 +105,21 @@ def market_like(request, market_id):
     url_next = request.GET.get("next") or reverse("markets:market_detail", kwargs={"market_id": market_id})
     
     return redirect(url_next)
+
+def market_edit(request, market_id):
+    market = get_object_or_404(Market, pk=market_id)
+
+    if request.method =="POST":
+        form = MarketForm(request.POST, instance = market)
+        if form.is_valid():
+            market.user = request.user
+            market.save()
+            return redirect("market_list")
+    else:
+        form = MarketForm(instance = market)
+        
+        context = {
+            "form" : form
+        }
+        
+        return render(request, "markets/add.html", context)

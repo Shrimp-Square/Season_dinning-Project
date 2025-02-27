@@ -19,6 +19,7 @@
                 <!-- Post의 좋아요를 누른 사용자 수를 가져옴 -->
                 Likes({{ market.like_users.count }})
             </button>
+            </form>
         <div class="post-images splide">
             <div class="splide__track">
                 <ul class="splide__list">
@@ -43,9 +44,10 @@
                 {% endfor %}
             </ul>
             <div class = "post-comment-create">
-            <form method="POST" action="{% url 'markets:comment_add' %}?next={{ action_redirect_url }}" >
+            <form method="POST" action="{% url 'markets:comment_add' market_id=market.id %}?next={{ action_redirect_url }}" >
+                
                 {% csrf_token %}
-                <input type = "hidden" name = "market" value = "{{ market.id }}">
+                <input type = "hidden" name = "market" value = "{{ market_id }}">
                 {{ comment_form.content }}
                 <button type="submit" class="btn btn-primary">리뷰 작성</button>
             </form>
