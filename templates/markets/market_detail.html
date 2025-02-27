@@ -4,9 +4,15 @@
     <head>
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
     </head>
-    <body>
+    <body>        
         <div id="navbar">
             <h1>{{ market.name }} </h1>
+            {% if user.business_number %}
+            <h2> 
+                <a href = "{% url 'markets:market_edit' market_id=market.id %}">마켓 정보 수정하기</a>  
+                <a href = "{% url 'markets:market_delete'  market_id=market.id%}">마켓 삭제하기</a>     
+            </h2>
+            {% endif %}
         </div>  
         <div class="market_butons">
             <form action="{% url 'markets:market_like' market_id=market.id %}?next={{ action_redirect_url }}"
@@ -33,14 +39,29 @@
                 </ul>
             </div>
         </div>
-        <div id="post-detail">
+        <div id="market-content">
             <p>{{ market.content|linebreaksbr }}</p>
+                <div class="post-tags">
+                    {% for tag in market.tags.all %}
+                        <span>#{{ tag.name }}</span>
+                    {% endfor %}
+                </div>
+            </div>
             <ul class="comments">
                 <span>Comments({{ market.comment_set.count }})</span>
                 {% for comment in market.comment_set.all %}
-                    <li class="comment">{{ comment.content }}</li>
-                {% empty %} <!-- post.comment_set.all 에 순회할 항목이 없는 경우 -->
-                    <li class="comment-empty">아직 댓글이 없습니다</li>
+                    <li>
+                        <span>{{ comment.user.username }}</span>
+                        <span>{{ comment.content }}</span>
+                    
+                <!-- 댓글 삭제 Form 추가 -->
+                    {% if user == comment.user %}
+                        <form method="POST" action="/markets/{{ comment.id }}/comment_delete/">                                        
+                        {% csrf_token %}
+                        <button type="submit">삭제</button>
+                        </form>
+                    {% endif %}
+                    </li>   
                 {% endfor %}
             </ul>
             <div class = "post-comment-create">
