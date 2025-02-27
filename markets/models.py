@@ -9,7 +9,8 @@ class Market(models.Model):
     call_number = models.CharField(max_length=15, verbose_name= '전화번호') 
     content = models.TextField(verbose_name= '가게 소개') # 업로드한 사진들(MarketImage)에 대한 소개 
     tags = models.ManyToManyField("markets.HashTag", max_length= 50, blank= True, verbose_name= '해시태그 목록') 
-    festivals = models.ManyToManyField("markets.Festival", on_delete= models.SET_NULL, related_name = 'markets'),
+    # festivals = models.ManyToManyField("markets.Festival", on_delete= models.SET_NULL, related_name = 'markets'),
+    festivals = models.ManyToManyField("markets.Festival", related_name = 'markets'),
 
 class MarketImage(models.Model):
     post = models.ForeignKey("markets.Market",
