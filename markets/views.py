@@ -20,7 +20,9 @@ def market_add(request):
         form = MarketForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            market = form.save(commit = False)
+            market.user = request.user
+            market.save()
             return render(request, "markets/market_list.html")
     else:
         form = MarketForm()
