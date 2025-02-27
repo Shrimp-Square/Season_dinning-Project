@@ -6,8 +6,8 @@ class Market(models.Model):
     user = models.ForeignKey("users.User", on_delete = models.CASCADE, related_name = 'markets') # user 모델과 foreign key 연결 
     name = models.CharField(max_length=32, verbose_name= '상호명') 
     address = models.CharField(max_length= 128, verbose_name= '주소') 
-    call_number = models.CharField(max_length=15, verbose_name= '전화번호') 
-    content = models.TextField(verbose_name= '가게 소개') # 업로드한 사진들(MarketImage)에 대한 소개 
+    call_number = models.CharField(max_length=15, blank= True, null = True, verbose_name= '전화번호') 
+    content = models.TextField(verbose_name= '가게 소개', blank= True, null = True) # 업로드한 사진들(MarketImage)에 대한 소개 
     tags = models.ManyToManyField("markets.HashTag", max_length= 50, blank= True, verbose_name= '해시태그 목록') 
     # festivals = models.ManyToManyField("markets.Festival", on_delete= models.SET_NULL, related_name = 'markets'),
     festivals = models.ManyToManyField("markets.Festival", related_name = 'markets'),
