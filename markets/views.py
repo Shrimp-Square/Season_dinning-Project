@@ -1,10 +1,8 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, reverse
+
 from markets.models import Market,Comment,HashTag,MarketImage,Festival
-from markets.forms import MarketForm
-from django.urls import reverse
 
-
-
+from markets.forms import MarketForm, CommentForm
 
 # Create your views here.
 def market_list(request):
@@ -25,17 +23,38 @@ def market_add(request):
             market = form.save(commit = False)
             market.user = request.user
             market.save()
-            return render(request, "markets/market_list.html")
+            
+            for image_file in request.FILES.getlist("images"):
+                MarketImage.objects.create(
+                    post = market, 
+                    photo = image_file,
+                )
+            # 'tags'에 전달된 문자열을 분리해 HashTag 생성
+            tag_string = request.POST.get("tags")
+            if tag_string:
+                tag_name_list = [tag_name.strip() for tag_name in tag_string.split(",")]
+                for tag_name in tag_name_list:
+                    tag, _ = HashTag.objects.get_or_create(
+                        name = tag_name,
+                    )
+                    # get_or_create로 생성하거나 가져온 HashTag 객체를 Post의 tags에 추가
+                    market.tags.add(tag)
+
+            return redirect("/markets/")
     else:
         form = MarketForm()
-        context = {
+
+    context = {
             'form' : form
         }
     return render(request, "markets/market_add.html", context)
 
 def nearby_tag_markets(request, tag_id, festival_id): # 해시태그를 통해 축제인근 가게를 검색
-    tag = HashTag.objects.get(id = tag_id)
-    festival = Festival.objects.get(id = festival_id)
+    try:
+        tag = HashTag.objects.get(id = tag_id)
+        festival = Festival.objects.get(id = festival_id)
+    except HashTag.DoesNotExist:
+        tag_markets = Market.objects.none()
 
     nearby_markets = festival.markets.all()
     tag_markets = nearby_markets.filter(tags=tag)
@@ -45,31 +64,41 @@ def nearby_tag_markets(request, tag_id, festival_id): # 해시태그를 통해 �
     return render(request, "tag_search_list.html", context)
 
 
-def market_detail(request, id):
-    post = Market.objects.get(pk = id)
-    print(post)
+def comment_add(request,market_id):
+    form = CommentForm(data = request.POST)
     
-    if request.method == "POST":
-        comment_content = request.POST["comment"]
-        
-        Comment.objects.create(
-            post = post,
-            comment_content = comment_content,
-        )
+    if form.is_valid():
+        comment = form.save(commit = False)
+        comment.user = request.user
+        comment.save()
+
+        if request.GET.get("next"):
+            url_next = request.GET.get("next")
+
+        # "next"값을 전달받지 않았다면 피드페이지의 글 위치로 이동
+        else:
+            url_next = request.GET.get("next") or reverse("markets:market_detail", kwargs={"market_id": market_id})
+        return redirect(url_next)
+    
+
+def market_detail(request, market_id):
+    market = Market.objects.get(id = market_id)
+    comment_form = CommentForm()
     context = {
-        'post' : post
+        "market" : market,
+        "comment_form" : comment_form,
     }
-    return render(request, "markets/market_detail.html", context)
+    return render(request,"markets/market_detail.html", context)
 
 def market_like(request, market_id):
-        market = Market.objects.get(id = market_id)
-        user = request.user
+    market = Market.objects.get(id = market_id)
+    user = request.user
+    
+    if user.like_markets.filter(id = market_id).exists():
+        user.like_markets.remove(market)
+    else:
+        user.like_markets.add(market)
         
-        if user.like_markets.filter(id = market_id).exists():
-            user.like_markets.remove(market)
-        else:
-            user.like_markets.add(market)
-            
-        url_next = request.GET.get("next") or reverse("market:detail") + f"market-{market_id}"
-        
-        return redirect(url_next)
+    url_next = request.GET.get("next") or reverse("markets:market_detail", kwargs={"market_id": market_id})
+    
+    return redirect(url_next)

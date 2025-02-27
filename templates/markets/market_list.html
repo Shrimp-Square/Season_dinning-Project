@@ -9,6 +9,19 @@
             <!-- <a href="/markets/market_add/" class="btn btn-primary">등록</a> -->
             <a href="/markets/add/" class="btn btn-primary">등록</a>
 
+            <ul>
+                <!-- for문으로 순회하며, 각각의 글은 li요소로 표시-->
+                {% for market in markets %}
+                <li>
+                    <a href = "{% url 'markets:market_detail' market_id=market.id %}"><h2>{{market.name}}</h2></a>
+                    <p>{{market.call_number}}</p>
+                    <p>{{market.address}}</p>
+                    <p>{{market.content}}</p>
+                    {% endfor %}
+                </li>
+            </ul>
+            <img src="{{images.photo.url}}">
+
         </div>
     </body>    
 </html>
