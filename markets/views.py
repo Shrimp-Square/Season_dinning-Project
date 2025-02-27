@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from markets.models import Market,Comment,HashTag,MarketImage,Festival
 from markets.forms import MarketForm, CommentForm
+from django.http import HttpResponseForbidden
 
 # Create your views here.
 def market_list(request):
@@ -68,7 +69,6 @@ def comment_add(request, market_id):
         print(request.POST)
         print(form)
         if form.is_valid():
-            print("is_valid 이후")
             comment = form.save(commit = False)
             comment.user = request.user
             comment.save()            
@@ -107,19 +107,39 @@ def market_like(request, market_id):
     return redirect(url_next)
 
 def market_edit(request, market_id):
-    market = get_object_or_404(Market, pk=market_id)
+    market = get_object_or_404(Market, id=market_id)
 
     if request.method =="POST":
         form = MarketForm(request.POST, instance = market)
         if form.is_valid():
             market.user = request.user
             market.save()
-            return redirect("market_list")
+            return redirect("/markets/#market-{comment.market.id}")
     else:
         form = MarketForm(instance = market)
-        
+            
         context = {
             "form" : form
         }
-        
-        return render(request, "markets/add.html", context)
+    
+    return render(request, "markets/market_edit.html", context)
+    
+
+def comment_delete(request, comment_id):
+    comment = Comment.objects.get(id = comment_id)
+    if comment.user == request.user:
+        comment.delete()
+        return redirect(f"/markets/#market-{comment.market.id}")
+    
+    else:
+        return HttpResponseForbidden("이 댓글을 삭제할 권한이 없습니다")
+  
+def market_delete(request, market_id):
+    market = Market.objects.get(id=market_id)
+    if market.user == request.user:
+        market.delete()
+        return redirect("/")
+    else:
+        return HttpResponseForbidden("이 마켓을 삭제할 권한이 없습니다")
+
+    
