@@ -1,8 +1,10 @@
-from django.shortcuts import render, redirect
-
+from django.shortcuts import render, redirect, get_object_or_404
 from markets.models import Market,Comment,HashTag,MarketImage,Festival
-
 from markets.forms import MarketForm
+from django.urls import reverse
+
+
+
 
 # Create your views here.
 def market_list(request):
@@ -45,17 +47,29 @@ def nearby_tag_markets(request, tag_id, festival_id): # 해시태그를 통해 �
 
 def market_detail(request, id):
     post = Market.objects.get(pk = id)
+    print(post)
     
     if request.method == "POST":
         comment_content = request.POST["comment"]
         
         Comment.objects.create(
-            content = comment_content,
+            post = post,
+            comment_content = comment_content,
         )
     context = {
-        'content' : comment_content
+        'post' : post
     }
     return render(request, "markets/market_detail.html", context)
 
-
-
+def market_like(request, market_id):
+        market = Market.objects.get(id = market_id)
+        user = request.user
+        
+        if user.like_markets.filter(id = market_id).exists():
+            user.like_markets.remove(market)
+        else:
+            user.like_markets.add(market)
+            
+        url_next = request.GET.get("next") or reverse("market:detail") + f"market-{market_id}"
+        
+        return redirect(url_next)
