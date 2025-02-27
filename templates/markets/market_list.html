@@ -1,27 +1,81 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ko">
     <head>
-        <h1>가게 목록 페이지 입니다</h1>
+        <title>Season Dining</title>
+        <link rel="icon" href="{% static 'assets.favicon.ico' %}">
+        <link rel="icon" href="{% static 'assets.favicon.ico' %}">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
+        <link rel= "stylesheet" href="{% static 'css/styles.css' %}">
+        <script src="https://kit.fontawesome.com/46c538ba64.js" crossorigin="anonymous"></script>
+        <link rel= "stylesheet" href="{% static 'css/styles_list.css' %}">
     </head>
     <body>
-        <div id="navbar">
-            {% if user.business_number %}
-            <!-- <a href="/markets/market_add/" class="btn btn-primary">등록</a> -->
-            <a href="/markets/add/" class="btn btn-primary">가게 등록</a>
-            {% endif %}
-            <ul>
-                <!-- for문으로 순회하며, 각각의 글은 li요소로 표시-->
-                {% for market in markets %}
-                <li>
-                    <a href = "{% url 'markets:market_detail' market_id=market.id %}"><h2>{{market.name}}</h2></a>
-                    <p>{{market.call_number}}</p>
-                    <p>{{market.address}}</p>
-                    <p>{{market.content}}</p>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container px-lg-5">
+                <!-- <a class="navbar-brand" href="">Start Bootstrap</a> -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <!-- <li class="nav-item"><a class="nav-link" href="#!"></a></li> -->
+                        {% if user.business_number %}
+                        <li class="nav-item"><a class="nav-link" href="/markets/add/">market add</a></li>
+                        {% endif %}
+                        {% if user.username %}
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="/users/logout">logout</a></li>
+                        {% else %}
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="/users/signup/">signup</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <header class="bg-dark py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="text-center text-white">
+                    <h1 class="display-4 fw-bolder">~~~~축제</h1>
+                    <p class="lead fw-normal text-white-50 mb-0">미완</p>
+                </div>
+            </div>
+        </header>
+        <section class="py-5">
+            <div class = "container">
+            <div class="container px-4 px-lg-5 mt-5">
+                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                    <!-- for문으로 순회-->
+                    {% for market in markets %}
+                    {% if market.name != "null" %}
+                    <div class="col mb-5">
+                        <div class="card h-100">
+                            {% if images.photo.url %}
+                            <img class="card-img-top" src="{{images.photo.url}}" alt="">
+                            {% else %}
+                            <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="">
+                            {% endif %}
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <h5 class="fw-bolder">{{market.name}}</h5>
+                                    <p>{{market.call_number}}</p>
+                                    <p>{{market.address}}</p>
+                                    <p>{{market.content}}</p>
+                                </div>
+                            </div>
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'markets:market_detail' market_id=market.id %}">Detail</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Product actions-->
+              
+                    {% endif %}
                     {% endfor %}
-                </li>
-            </ul>
-            <img src="{{images.photo.url}}">
-
+                </div>
+            </div>
         </div>
+        </section>
+                    
+            
+
+        </section>
     </body>    
 </html>

@@ -1,0 +1,127 @@
+#login, #signup {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background-color: #fafafa;
+}
+
+#login > form, #signup > form {
+display: flex;
+flex-direction: column;
+align-items: center;
+border: 1px solid #ddd;
+margin-top: -40px;
+padding: 30px 40px 40px;
+border-radius: 2px;
+background-color: white;
+}
+
+#login > form > h1, #signup > form > h1 {
+margin: 0 0 20px 0;
+font-weight: bold;
+}
+
+#login > form > p, #signup > form > p {
+margin: 0;
+
+}
+#login > form > p > label, #signup > form > p > label {
+display: block;
+position: relative;
+font-size: 12px;
+font-weight: 400;
+margin-bottom: 2px;
+color: #333;
+}
+
+#login > form > p > label::after, #signup > form > p > label::after {
+bottom: 0;
+color: white;
+content: ":";
+position: absolute;
+transform: translate(-100%, 0);
+}
+
+#login > form > p > input, #signup > form > p > input {
+padding: 11px 0 10px 10px;
+min-width: 250px;
+outline: 0;
+margin: 0 0 10px 0;
+font-size: 13px;
+color: #333;
+border: 1px solid #ddd;
+border-radius: 2px;
+}
+
+#login > form > ul.errorlist, #signup > form > ul.errorlist {
+color: red;
+font-size: 12px;
+font-weight: 500;
+margin-bottom: 6px;
+}
+
+#login > form > a, #signup > form > a {
+margin-top: 2px;
+color: #666;
+font-size: 12px;
+}
+
+@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);
+ul, ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  padding: 0;
+  margin: 0;
+  font-weight: 300;
+}
+
+h2 {
+  font-size: 1.42rem;
+}
+
+a {
+  text-decoration: none;
+  color: #333;
+}
+
+textarea {
+  font-family: "Noto Sans KR", serif;
+}
+
+html {
+  margin: 0;
+  font-family: "Noto Sans KR", serif;
+  font-weight: 300;
+  font-size: 14px;
+  color: #333;
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  height: 100%;
+}
+
+.index-container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  margin-top: -4vh;
+}
+
+input, textarea {
+    border: none;
+    padding: 10px;
+}
+
+input:focus, textarea:focus {
+outline: none;
+}
