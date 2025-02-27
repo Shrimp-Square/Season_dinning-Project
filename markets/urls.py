@@ -8,4 +8,5 @@ urlpatterns = [
     path("<int:id>/", views.market_detail, name = "market_detail"),
     # path("tags/<str: tag_name>/", views.nearby_tag_markets, name = "tag_search_list"),
     path("tags/<str:tag_name>/", views.nearby_tag_markets, name = "tag_search_list"),
+    path("<int:market_id>/like/", views.market_like, name = "market_like"),
 ]

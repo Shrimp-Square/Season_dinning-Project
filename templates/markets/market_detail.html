@@ -6,12 +6,24 @@
     </head>
     <body>
         <div id="navbar">
-            <span>상호명</span>
-        </div>  
-        <div class="post-images splide">
+            <span>상호</span>
+        </div>
+        <div class="market_butons">
+            <form action="{% url 'markets:market_like' market_id=market.id %}?next={{ action_redirect_url }}"
+            method = "POST">
+            {% csrf_token %}
+            <button type="submit"
+                {% if user in market.like_users.all %}
+                    style="color: red;"
+                {% endif %}>
+                <!-- Post의 좋아요를 누른 사용자 수를 가져옴 -->
+                Likes({{ market.like_users.count }})
+            </button>
+            </form>   
+            <div class="post-images splide">
             <div class="splide__track">
                 <ul class="splide__list">
-                    {% for image in post.postimage_set.all %}
+                    {% for image in market.postimage_set.all %}
                         {% if image.photo %}
                             <li class="splide__slide">
                                 <img src="{{ image.photo.url }}">
@@ -22,12 +34,16 @@
             </div>
         </div>
         <div id="post-detail">
+            <div>
+                <label>내용</label>
+                <textarea name="content" cols="50" rows="10"></textarea>
+            </div>
             <p>{{ post.content|linebreaksbr }}</p>
             <ul class="comments">
                 {% for comment in post.comment_set.all %}
                     <li class="comment">{{ comment.content }}</li>
                 {% empty %} <!-- post.comment_set.all 에 순회할 항목이 없는 경우 -->
-                    <li class="comment-empty">아직 댓글이 없습니다</li>
+                    <li class="comment-empty">댓글을 입력하세요.</li>
                 {% endfor %}
             </ul>
             <form method="POST">
