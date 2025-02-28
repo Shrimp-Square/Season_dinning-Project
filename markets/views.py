@@ -114,7 +114,7 @@ def market_edit(request, market_id):
         if form.is_valid():
             market.user = request.user
             market.save()
-            return redirect("/markets/#market-{comment.market.id}")
+            return redirect(f"/markets/#market-{market.market_id}")
     else:
         form = MarketForm(instance = market)
             
@@ -129,7 +129,13 @@ def comment_delete(request, comment_id):
     comment = Comment.objects.get(id = comment_id)
     if comment.user == request.user:
         comment.delete()
-        return redirect(f"/markets/#market-{comment.market.id}")
+
+        if request.GET.get("next"):
+                url_next = request.GET.get("next")
+        else:
+                url_next = request.GET.get("next") or reverse("markets:market_detail", kwargs={"market_id": comment.market.id})
+        return redirect(url_next)
+
     
     else:
         return HttpResponseForbidden("이 댓글을 삭제할 권한이 없습니다")
